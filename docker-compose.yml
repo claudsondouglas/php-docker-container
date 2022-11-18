@@ -8,8 +8,9 @@ services:
         volumes:
             - ./app:/var/www
             - ./site.conf:/etc/nginx/conf.d/site.conf
-        links:
+        depends_on:
             - php
+            - mysql
         volumes_from:
             - php
     php:
@@ -17,3 +18,18 @@ services:
         container_name: php-fpm
         volumes:
             - ./app:/var/www
+        build:
+            dockerfile: ./Dockerfile
+    mysql:
+        image: mysql:latest
+        container_name: mysql
+        restart: always
+        environment:
+            - MYSQL_DATABASE=MYSQL_DATABASE
+            - MYSQL_ROOT_PASSWORD=MYSQL_ROOT_PASSWORD
+            - MYSQL_USER=MYSQL_USER
+            - MYSQL_PASSWORD=MYSQL_PASSWORD
+        ports:
+            - "8989:3306"
+        volumes:
+            - "./mysql:/var/lib/mysql"
